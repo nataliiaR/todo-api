@@ -33,7 +33,19 @@ app.get('/todos', function(req,res){
 
 //Get /todos/:id
 app.get('/todos/:id', function(req,res){
-	res.send('Asking for todo with id of ' + req.params.id);
+	var todoId=parseInt(req.params.id,10);
+	var matchedTodo;
+
+	todos.forEach(function(todo){
+		if (todoId === todo.id){
+			matchedTodo = todo;
+		}
+	});
+	if (matchedTodo){
+		res.json(matchedTodo);
+	} else{
+		res.status(404).send();
+	}
 });
 
 app.listen(PORT, function(){
