@@ -32,6 +32,9 @@ app.get('/todos', function(req,res){
 });
 
 //Get /todos/:id
+app.get('/todos/:id', function(req,res){
+	res.send('Asking for todo with id of ' + req.params.id);
+});
 
 app.listen(PORT, function(){
  	console.log('express listening on port');
