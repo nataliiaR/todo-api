@@ -53,7 +53,7 @@ app.post('/todos', function(req, res){
 	}
 
 	body.description=body.description.trim();
-	
+
 	//add id field 
 	body.id=todoNextId++;
 	// push body into array
@@ -61,6 +61,20 @@ app.post('/todos', function(req, res){
 	res.json(body);
 });
 
+//Delete /todos/:id
+
+app.delete('/todos/:id', function(req,res){
+	var todoId = parseInt(req.params.id, 10);
+	var matchedTodo = _.findWhere(todos, {id: todoId});
+
+	if (!matchedTodo){
+		res.status(404).send("error: no todo found with that id");
+	} else {
+		todos = _.without(todos, matchedTodo);
+		res.json(matchedTodo);
+	}
+
+});
 
 app.listen(PORT, function(){
  	console.log('express listening on port');
