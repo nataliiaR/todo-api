@@ -17,7 +17,7 @@ app.get ('/', function(req, res){
 
 });
 
-// Get /todos
+// Get /todos?completed=true&q=work
 app.get('/todos', function(req,res){
 	//return the todos array converted in json, as we can pass a text only. 
 	//todos is sent back to the caller
@@ -29,7 +29,15 @@ app.get('/todos', function(req,res){
 	} else if(queryParams.hasOwnProperty('completed') && queryParams.completed === 'false'){
 		filterTodos = _.where(filterTodos, {completed:false});
 	}
-	
+
+
+	if(queryParams.hasOwnProperty('q') && queryParams.q.length>0){
+		filterTodos = _.filter(filterTodos, function(todo){
+			return todo.description.toLowerCase().indexOf(queryParams.q.toLowerCase())>-1;
+		});
+	}
+
+
 	res.json(filterTodos);
 
 });
