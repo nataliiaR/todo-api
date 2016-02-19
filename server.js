@@ -21,7 +21,16 @@ app.get ('/', function(req, res){
 app.get('/todos', function(req,res){
 	//return the todos array converted in json, as we can pass a text only. 
 	//todos is sent back to the caller
-	res.json(todos);
+	var queryParams=req.query;
+	var filterTodos= todos;
+
+	if (queryParams.hasOwnProperty('completed') && queryParams.completed==='true'){
+		filterTodos=_.where(filterTodos,{completed:true});
+	} else if(queryParams.hasOwnProperty('completed') && queryParams.completed === 'false'){
+		filterTodos = _.where(filterTodos, {completed:false});
+	}
+	
+	res.json(filterTodos);
 
 });
 
