@@ -9,22 +9,50 @@ var Todo = sequelize.define('todo', {
 		type:Sequelize.STRING,
 		allowNull: false,
 		validate: {
-			notEmpty: true
-		}
+			len: [1,250]		}
 	},
 	completed:{
 		type:Sequelize.BOOLEAN,
-		allowNull:false
+		allowNull:false,
+		defaultValue: false
 	}
 });
 
 sequelize.sync({force:true}).then(function (){
 	console.log('Everything is sync');
-	Todo.create({
-		description:'Walking my dog',
-		completed: false
-	}).then(function(todo){
-		console.log('Finished!');
-		console.log(todo)
+	Todo.findById(2).then(function(todo){
+		if (todo) {
+			console.log(todo.toJSON());
+		} else{
+			console.log('no todo with such id');
+		}
 	});
+	// Todo.create({
+	// 	description:'Walking my dog',
+	// 	completed: false
+	// }).then(function(todo){
+	// 	return Todo.create({
+	// 		description: 'Clean home'
+	// 	});
+	// }).then(function(){
+	// 	//return Todo.findById(1)
+	// 	return Todo.findAll({
+	// 		where:{
+	// 			description: {
+	// 				$like: '%ing%'
+	// 			}
+	// 		}
+	// 	});
+	// }).then(function(todos){
+	// 	if (todos) {
+	// 		todos.forEach(function(todo){
+	// 			console.log(todo.toJSON());
+	// 		})
+			
+	// 	} else{
+	// 		console.log('no todo found');
+	// 	}
+	// }).catch(function(e){
+	// 	console.log(e);
+	// });
 });
