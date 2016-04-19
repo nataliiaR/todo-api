@@ -22,25 +22,44 @@ app.get ('/', function(req, res){
 app.get('/todos', function(req,res){
 	//return the todos array converted in json, as we can pass a text only. 
 	//todos is sent back to the caller
-	var queryParams=req.query;
-	var filterTodos= todos;
 
-	if (queryParams.hasOwnProperty('completed') && queryParams.completed==='true'){
-		filterTodos=_.where(filterTodos,{completed:true});
-	} else if(queryParams.hasOwnProperty('completed') && queryParams.completed === 'false'){
-		filterTodos = _.where(filterTodos, {completed:false});
+	var query=req.query;
+	var where = {};
+	//	var queryParams=req.query;
+	// var filterTodos= todos;
+
+	// if (queryParams.hasOwnProperty('completed') && queryParams.completed==='true'){
+	// 	filterTodos=_.where(filterTodos,{completed:true});
+	// } else if(queryParams.hasOwnProperty('completed') && queryParams.completed === 'false'){
+	// 	filterTodos = _.where(filterTodos, {completed:false});
+	// }
+
+	// if(queryParams.hasOwnProperty('q') && queryParams.q.length>0){
+	// 	filterTodos = _.filter(filterTodos, function(todo){
+	// 		return todo.description.toLowerCase().indexOf(queryParams.q.toLowerCase())>-1;
+	// 	});
+	// }
+
+	// res.json(filterTodos);
+
+	//----convert previous API calls to sequelize calls
+	if (query.hasOwnProperty('completed') && query.completed==='true'){
+		where.completed = true;
+	} else if(query.hasOwnProperty('completed') && query.completed==='false'){
+		where.completed = false;
 	}
+	if (query.hasOwnProperty('q') && query.q.length>0){
+		where.description = {
+			$like: '%' +query.q+ '%'
+		};
+	} 
 
+	db.todo.findAll({where : where}).then(function(todos){
+		res.json(todos);
+	}, function(e){
+		res.status(500).send();
 
-	if(queryParams.hasOwnProperty('q') && queryParams.q.length>0){
-		filterTodos = _.filter(filterTodos, function(todo){
-			return todo.description.toLowerCase().indexOf(queryParams.q.toLowerCase())>-1;
-		});
-	}
-
-
-	res.json(filterTodos);
-
+	})
 });
 
 //Get /todos/:id
