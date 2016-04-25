@@ -2,6 +2,7 @@ var express= require('express');
 var bodyParser=require('body-parser');
 var _ = require('underscore');
 var db = require('./db.js');
+var bcrypt = require ('bcrypt');
 var app = express();
 var PORT = process.env.PORT || 3000;
 
@@ -224,6 +225,24 @@ app.post('/users', function(req, res){
 });
 
 // -------
+
+
+// Post /users/login
+
+app.post('/users/login', function(req, res){
+
+	var body = _.pick(req.body, 'email','password');
+	// login our new class method in user model
+	db.user.login(body).then(function(user){
+		res.json(user.toPublicJSON());
+	}, function(e){
+		res.status(401).send();
+	});
+});
+
+
+
+//-----
 
 db.sequelize.sync().then(function(){
 	app.listen(PORT, function(){
